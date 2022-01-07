@@ -1,0 +1,314 @@
+/*
+This file is a part of FBrowser project.
+https://github.com/44670/FBrowser
+License: LGPL v2.1
+*/
+
+:root {
+    --color-background: #ffffff;
+    --color-text: #000000;
+    --color-label: #5a5959;
+    --color-light: #a9a9a9;
+    --color-primary: #0073ff;
+    --color-primary-clicked: #0060ff;
+    --color-primary-text: #ffffff;
+    --color-danger: #d23f09;
+    --color-danger-clicked: #a02506;
+    --color-danger-text: #ffffff;
+    --color-border: #252525;
+    --color-swkbd-background: #c5daf1;
+    --color-swkbd-text: #000000;
+    --text-size: 16px;
+    --text-size-large: 24px;
+    --nav-height: 40px;
+    --switch-width: 40px;
+    --switch-height: 20px;
+}
+
+input {
+    font-size: var(--text-size);
+}
+
+button {
+    font-size: var(--text-size);
+}
+
+select {
+    font-size: var(--text-size);
+}
+
+.row {
+    margin: 10px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.5em 1em;
+    line-height: 1.5em;
+    text-align: center;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--color-primary);
+    color: var(--color-primary-text);
+    font-size: var(--text-size);
+}
+
+.btn:active {
+    background-color: var(--color-primary-clicked);
+}
+
+.btn-danger {
+    background-color: var(--color-danger);
+    color: var(--color-danger-text);
+}
+
+.btn-danger:active {
+    background-color: var(--color-danger-clicked);
+}
+
+.txt {
+    display: block;
+    padding: 10px;
+    line-height: 1.5;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+.select {
+    display: block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    line-height: 3;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-background);
+    color: var(--color-text);
+}
+
+
+.list {
+    display: block;
+    border-top: 1px solid var(--color-border);
+    user-select: none;
+}
+
+.list-item {
+    display: block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.list-item:active {
+    background-color: var(--color-primary-clicked);
+    color: var(--color-primary-text);
+}
+
+.list-item-right {
+    display: block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    line-height: 1.5;
+    border-bottom: 1px solid var(--color-border);
+    text-align: right;
+}
+
+
+
+body {
+    margin: 0;
+    padding: 0;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+html {
+    font-size: var(--text-size);
+    color: var(--color-text);
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    overflow: hidden;
+}
+
+
+.dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 30vw;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-background);
+    border-radius: 4px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.dialog-body {
+    max-width: 90vw;
+    padding: 12px;
+}
+
+.dialog-footer {
+    padding: 12px;
+    text-align: right;
+}
+
+.dialog-footer .btn {
+    margin-left: 12px;
+}
+
+.dialog-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 50vw;
+}
+
+.nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: var(--nav-height);
+    background-color: var(--color-primary);
+    color: var(--color-primary-text);
+    z-index: 2;
+}
+
+.nav .title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--text-size-large);
+    line-height: var(--nav-height);
+    text-align: center;
+}
+
+.nav .nav-btn {
+    line-height: var(--nav-height);
+    font-size: var(--text-size-large);
+    line-height: var(--nav-height);
+    text-align: center;
+    width: var(--nav-height);
+}
+
+.nav .nav-btn:active {
+    background-color: var(--color-primary-clicked);
+}
+
+.page {
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: var(--nav-height);
+}
+
+.page-nonav {
+    padding-top: 0;
+}
+
+.label {
+    display: block;
+    color: var(--color-label);
+    font-weight: bold;
+    line-height: 2
+}
+
+
+.switch {
+    position: relative;
+    display: inline-block;
+    height: 1.5em;
+    width: 3em
+}
+
+.switch .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-light);
+    border-radius: 10px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 1.3em;
+    width: 1.3em;
+    top: 0.1em;
+    left:0.1em;
+    background-color: var(--color-primary-text);
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+.switch input:checked + .slider {
+    background-color: var(--color-primary-clicked);
+}
+
+
+.switch input:checked + .slider:before {
+    transform: translateX(1.5em);
+}
+
+
+.list-item .switch {
+    float: right;
+}
+
+
+
+.swkbd {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 101;
+    background-color: var(--color-swkbd-background);
+}
+
+.swkbd-row {
+    display: block;
+    left:0;
+    height: 2em;
+}
+
+.swkbd-key {
+    display: inline-block;
+    width: calc(100% / 10);
+    text-align: center;
+    line-height: 2em;
+    color: var(--color-text);
+}
+
+.swkbd-key:active {
+    background-color: var(--color-primary-clicked);
+    color: var(--color-primary-text);
+}

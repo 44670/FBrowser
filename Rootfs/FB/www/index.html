@@ -1,0 +1,186 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>SimpleUI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="simpleui.css">
+    <link rel="stylesheet" href="thirdparty/font-awesome/css/font-awesome.css">
+</head>
+
+<body>
+    <div class="nav" id="nav">
+        <div class="nav-btn fa fa-chevron-left nav-back">
+        </div>
+        <div class="title"></div>
+    </div>
+    <div class="page page-nonav" id="main" data-title="Main" hidden>
+        <h1>FBrowser</h1>
+        <div class="label">Select an option</div>
+        <div class="list">
+            <div class="list-item list-item-goto" onclick="$ui.page.go('clock') ">
+                Clock
+            </div>
+            <div class="list-item list-item-goto" onclick="$ui.page.go('ui')">
+                UI Demo
+            </div>
+            <div class="list-item list-item-goto" onclick="$ui.page.go('settings')">
+                Settings
+            </div>
+        </div>
+        <a href="https://github.com/44670/FBrowser">https://github.com/44670/FBrowser</a>
+    </div>
+    <div class="page" id="clock" data-title="Clock" hidden>
+        <svg width=200 height=200 id="svg-clock">
+            <circle cx="100" cy="100" r="90" stroke="black" stroke-width="5" fill="white" />
+            <line id="hour" x1="100" y1="100" x2="100" y2="50" stroke="black" stroke-width="5" />
+            <line id="minute" x1="100" y1="100" x2="100" y2="25" stroke="black" stroke-width="5" />
+            <line id="second" x1="100" y1="100" x2="100" y2="10" stroke="red" stroke-width="5" />
+        </svg>
+    </div>
+    <div class="page" id="ui" data-title="UI Elements" hidden>
+        <div class="row">
+            <button class="btn btn-danger" onclick="$ui.modal.alert(1)">Alert</button>
+            <button class="btn" onclick="$ui.modal.confirm(1)">Confirm</button>
+        </div>
+        <div class="row">
+            <input class="txt txt-swkbd" type="text" placeholder="Text" />
+        </div>
+        <div class="row">
+            <input class="txt txt-swkbd" type="text" placeholder="Text" />
+        </div>
+    </div>
+    <div class="page" id="settings" data-title="Settings" hidden>
+        <div class="label">WiFi Config</div>
+        <div class="row">
+            <input class="txt txt-swkbd" id="wifi-ssid" type="text" placeholder="SSID" />
+        </div>
+        <div class="row">
+            <input class="txt txt-swkbd" id="wifi-pwd" type="text" placeholder="Password" />
+        </div>
+        <div class="row">
+            <button class="btn" onclick="wifiSave()">Save</button>
+        </div>
+        <div class="list">
+            <div class="list-item list-item-switch" id="ssh-switch">
+                Enable SSH Server
+            </div>
+        </div>
+        <br>
+        <div class="list">
+            <div class="list-item" onclick="doReboot()">
+                Reboot
+            </div>
+        </div>  
+    </div>
+    <script src="thirdparty/zepto.min.js"></script>
+    <script src="simpleui.js"></script>
+</body>
+
+<script>
+    function runCmd(args) {
+        if (window.FB_OSBridge) {
+            return window.FB_OSBridge.runCmd(args);
+        } else {
+            console.log('runCmd not supported', args);
+            return null;
+        }   
+    }
+    function testAjax() {
+        $.get('https://api.44670.org/ip', (result) => {
+            $ui.modal.alert(result);
+        })
+    }
+
+    var svgHour = document.getElementById('hour')
+    var svgMinute = document.getElementById('minute')
+    var svgSecond = document.getElementById('second')
+    var clockPage
+    function updateClock() {
+        if (!clockPage.shown) {
+            return
+        }
+        var now = new Date()
+        var hour = now.getHours()
+        var minute = now.getMinutes()
+        var second = now.getSeconds()
+        var ms = now.getMilliseconds()
+        var hourAngle = (hour % 12) * 30 + (minute / 60) * 30
+        var minuteAngle = minute * 6
+        var secondAngle = second * 6 + (ms / 1000) * 6
+        svgHour.setAttribute('transform', 'rotate(' + hourAngle + ', 100, 100)')
+        svgMinute.setAttribute('transform', 'rotate(' + minuteAngle + ', 100, 100)')
+        svgSecond.setAttribute('transform', 'rotate(' + secondAngle + ', 100, 100)')
+        requestAnimationFrame(updateClock)
+    }
+
+    $ui.page.on('clock', function (type) {
+        clockPage = this;
+        if (type == 'show') {
+            updateClock()
+        }
+    })
+
+    $ui.page.on('main', function (type) {
+        console.log(type)
+    })
+
+    $ui.page.on('settings', function (type) {
+        console.log(type)
+        if (type == 'create') {
+            $('#ssh-switch input').on('change', function () {
+                var enabled = this.checked
+                var cmd = ['chmod', (enabled ? '+x' : '-x'), '/etc/init.d/S50dropbear']
+                runCmd(cmd)
+                if (enabled) {
+                    $ui.modal.alert('SSH Server will be enabled after reboot.\nWARNING: Please change the password of root account as soon as possible.')
+                } else {
+                    $ui.modal.alert('SSH Server will be disabled after reboot.')
+                }
+            });
+        }
+    })
+
+    function wifiEncodeStr(str) {
+        return '"' + str.replace(/\"/g, '\\"') + '"';
+    }
+
+    function wifiSave() {
+        var ssid = $('#wifi-ssid').val()
+        var pwd = $('#wifi-pwd').val()
+        var cmdBase = ['wpa_cli', '-i', 'wlan0']
+        runCmd(cmdBase.concat(['remove_network', 'all']))
+        if (ssid.length <= 0) {
+            runCmd(cmdBase.concat(['save_config']))
+            $ui.modal.alert('WiFi config cleared.')
+            return;
+        }
+        networkID = runCmd(cmdBase.concat(['add_network'])).trim()
+        if ((networkID.length == 0) || (parseInt(networkID) === NaN)) {
+            $ui.modal.alert('Failed to add network.\n' + networkID)
+            return
+        }
+        console.log('networkID', networkID)
+        runCmd(cmdBase.concat(['set_network', networkID, 'ssid', wifiEncodeStr(ssid)]))
+        if (pwd == '') {
+            runCmd(cmdBase.concat(['set_network', networkID, 'key_mgmt', 'NONE']))
+        } else {
+            runCmd(cmdBase.concat(['set_network', networkID, 'psk', wifiEncodeStr(pwd)]))
+        }
+        runCmd(cmdBase.concat(['enable_network', networkID]))
+        runCmd(cmdBase.concat(['save_config']))
+        $ui.modal.alert('WiFi config saved.')
+    }
+
+    function doReboot() {
+        $ui.modal.confirm('Are you sure to reboot?', function (btnIndex) {
+            if (btnIndex == 1) {
+                runCmd(['reboot'])
+            }
+        })
+    }
+
+
+</script>
+
+</html>

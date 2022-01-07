@@ -1,0 +1,10 @@
+{
+    "url":"./www/index.html",
+    "wsServerPort":0,
+    "width": 0,
+    "height": 0,
+    "proxyHost": "",
+    "proxyPort": 0,
+    "enableJSBridge": true,
+    "enableOSBridge": true
+}
