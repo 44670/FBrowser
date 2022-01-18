@@ -1,7 +1,7 @@
 /*
 This file is a part of FBrowser project.
 https://github.com/44670/FBrowser
-License: LGPL v2.1
+License: LGPL v3
 */
 
 function $id(id) {
