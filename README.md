@@ -22,7 +22,3 @@ Additionally, QtWebKit is based on an old WebKit revision with known unpatched s
 
 # License
 This project is licensed under the LGPLv3 and commercial license.
-
-Commercial license can be purchased by individual users or organizations.
-
-Please note that you don't need to buy commercial license if your use of this project is compitable with LGPLv3 .
